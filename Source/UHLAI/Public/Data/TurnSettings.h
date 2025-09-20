@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "GameFramework/Character.h"
 #include "TurnSettings.generated.h"
 
 class UAnimMontage;
@@ -39,16 +40,13 @@ public:
 };
 
 
-/**
- *
- */
 // TODO make warning that not all ranges are covered
 // TODO limit TurnAnimations count e.g. max 3 times, then give choice what to do - abort or success?
 // TODO limit playing similar animations count e.g. max 3 times ?? and then give choice what to do - abort or success?
 // TIPS
 // - ranges can overlap, in such cases animation will be fired by order, so order is important
 USTRUCT(Blueprintable)
-struct FTurnSettings
+struct UHLAI_API FTurnSettings
 {
     GENERATED_BODY()
 
@@ -82,6 +80,46 @@ public:
     void SetupPreset_15_45_90_180();
     void SetupPreset_15_30_45_90_180();
 };
+
+namespace TurnToStatics
+{
+	static bool IsTurnWithAnimationRequired(ACharacter* Character)
+	{
+		if (!Character) return false;
+		if (Character->IsPlayingRootMotion()) return false;
+		return true;
+	}
+
+	static FTurnRange GetTurnRange(float DeltaAngle, bool& bCurrentTurnRangeSet, FTurnSettings TurnSettings_In)
+	{
+		FTurnRange Result;
+		bCurrentTurnRangeSet = false;
+		for (TTuple<FString, FTurnRanges> TurnToRange : TurnSettings_In.TurnRangesGroups)
+		{
+			for (FTurnRange Range : TurnToRange.Value.TurnRanges)
+			{
+				if (Range.Range.Contains(DeltaAngle))
+				{
+					Result = Range;
+					bCurrentTurnRangeSet = true;
+					break;
+				}
+			}
+			if (bCurrentTurnRangeSet)
+			{
+				break;
+			}
+		}
+		return Result;
+	}
+
+	FORCEINLINE_DEBUGGABLE FVector::FReal CalculateAngleDifferenceDot(const FVector& VectorA, const FVector& VectorB)
+	{
+		return (VectorA.IsNearlyZero() || VectorB.IsNearlyZero())
+			? 1.f
+			: VectorA.CosineAngle2D(VectorB);
+	}
+}
 
 
 UCLASS(Blueprintable)

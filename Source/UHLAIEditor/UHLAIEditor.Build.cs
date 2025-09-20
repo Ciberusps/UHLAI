@@ -31,8 +31,6 @@ public class UHLAIEditor : ModuleRules
 				"PropertyEditor",
 				"Blutility",
 				"UMG", 
-				"BehaviorTreeEditor",
-				// ... add other public dependencies that you statically link with here ...
 			}
 			);
 
@@ -53,10 +51,6 @@ public class UHLAIEditor : ModuleRules
 				"UHLAI",
 				
 				"EditorWidgets",
-				
-				"GameplayTags",
-				"GameplayTagsEditor", 
-				// ... add private dependencies that you statically link with here ...
 			}
 			);
 

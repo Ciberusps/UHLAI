@@ -8,11 +8,10 @@
 class FToolBarBuilder;
 class FMenuBuilder;
 
-class FUHLAIEditorModule : public IModuleInterface
+class FUHLBehaviorTreesEditorModule : public IModuleInterface
 {
 public:
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
-	
 };
