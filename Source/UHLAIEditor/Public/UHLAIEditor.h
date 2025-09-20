@@ -8,7 +8,7 @@
 class FToolBarBuilder;
 class FMenuBuilder;
 
-class FUHLBehaviorTreesEditorModule : public IModuleInterface
+class FUHLAIEditorModule : public IModuleInterface
 {
 public:
 	/** IModuleInterface implementation */

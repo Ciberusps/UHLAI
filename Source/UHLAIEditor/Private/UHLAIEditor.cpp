@@ -8,14 +8,14 @@ static const FName UHLAIEditorTabName("UHLAIEditor");
 
 #define LOCTEXT_NAMESPACE "FUHLAIEditorModule"
 
-void FUHLBehaviorTreesEditorModule::StartupModule()
+void FUHLAIEditorModule::StartupModule()
 {
 }
 
-void FUHLBehaviorTreesEditorModule::ShutdownModule()
+void FUHLAIEditorModule::ShutdownModule()
 {
 }
 
 
 #undef LOCTEXT_NAMESPACE
-IMPLEMENT_MODULE(FUHLBehaviorTreesEditorModule, UHLAIEditor)
+IMPLEMENT_MODULE(FUHLAIEditorModule, UHLAIEditor)
