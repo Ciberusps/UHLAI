@@ -132,10 +132,10 @@ public:
     FTurnSettings TurnSettings;
 
     // Prefers to rotate 180deg if relative angle >115deg, suits for all medium mobs(human size)
-    UFUNCTION(BlueprintCallable, Category="Setup", CallInEditor, meta=(EditCondition="bUseTurnAnimations && !bUseTurnSettingsDataAsset", EditConditionHides, DisplayPriority=1))
+    UFUNCTION(BlueprintCallable, Category="Setup", CallInEditor, meta=(DisplayPriority=1))
     void SetupPreset_Default_90_180();
     // All ranges have same proportion
-    UFUNCTION(BlueprintCallable, Category="Setup", CallInEditor, meta=(EditCondition="bUseTurnAnimations && !bUseTurnSettingsDataAsset", EditConditionHides, DisplayPriority=1))
+    UFUNCTION(BlueprintCallable, Category="Setup", CallInEditor, meta=(DisplayPriority=1))
     void SetupPreset_BigEnemy_90_180();
     UFUNCTION(BlueprintCallable, CallInEditor, Category="Setup", meta = (DisplayPriority=2))
     void SetupPreset_45_90_180();

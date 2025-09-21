@@ -27,10 +27,6 @@
     {
       "Name": "GameplayTagsEditor",
       "Enabled": true
-    },
-    {
-      "Name": "UnrealHelperLibrary",
-      "Enabled": true
     }
   ]
 }

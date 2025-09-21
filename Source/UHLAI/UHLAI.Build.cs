@@ -32,7 +32,7 @@ public class UHLAI : ModuleRules
 				"GameplayTags",
 				"GameplayTasks",
 
-				"AIModule", 
+				"AIModule",
 
 				// ... add other public dependencies that you statically link with here ...
 			}
@@ -43,10 +43,7 @@ public class UHLAI : ModuleRules
 			new string[]
 			{
 				"Engine",
-				
-				// TODO: probably should be removed
-				"UnrealHelperLibrary",
-				
+
 				"AnimGraphRuntime",
 			}
 			);

@@ -7,6 +7,18 @@
 #include "UObject/Interface.h"
 #include "UHLAIActorSettings.generated.h"
 
+UENUM(BlueprintType)
+enum class EUHLSettingsSource: uint8
+{
+    None UMETA(Hidden),
+
+    Node,
+    DataAsset,
+    Actor,
+
+    MAX UMETA(Hidden)
+};
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UUHLAIActorSettings : public UInterface
