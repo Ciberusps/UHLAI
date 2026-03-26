@@ -3,7 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "Data/TurnSettings.h"
+#include "Data/SizeSettings.h"
+
 #include "UObject/Interface.h"
 #include "UHLAIActorSettings.generated.h"
 
@@ -37,7 +40,10 @@ class UHLAI_API IUHLAIActorSettings
 public:
 
 /** IUHLActorSettings */
-    UFUNCTION(Category="UHLActorSettings", BlueprintCallable, BlueprintNativeEvent)
+    UFUNCTION(Category = "UHLActorSettings", BlueprintCallable, BlueprintNativeEvent)
     FTurnSettings GetTurnSettings() const;
+    
+    UFUNCTION(Category = "UHLActorSettings", BlueprintCallable, BlueprintNativeEvent)
+    FSizeSettings GetSizeSettings() const;
 /** ~IUHLActorSettings */
 };
