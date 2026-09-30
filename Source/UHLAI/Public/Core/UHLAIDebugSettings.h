@@ -16,5 +16,5 @@ struct FUHLAIDebugSettings
 	FValueOrBBKey_Float DrawDebugTime = 2.0f;
 
 	UPROPERTY(Category="Decorator", EditAnywhere)
-	FColor Color = FLinearColor(0, 0.66, 1).ToFColor(true);
+	FColor Color = FLinearColor(0.f, 0.66f, 1.f).ToFColor(true);
 };
