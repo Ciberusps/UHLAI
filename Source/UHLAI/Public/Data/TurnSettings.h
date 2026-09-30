@@ -19,12 +19,18 @@ public:
     FString Name;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TurnRange")
     FFloatRange Range = FFloatRange(-135, -45);
+	// nominal rotation this montage performs (magnitude, degrees). Used only by bUseBestSingleMontage
+	// to pick the largest montage whose TurnAngle <= |DeltaAngle| and let motion warping finish the rest.
+	// 0 = auto-derive from the Range window (min-magnitude bound) so legacy assets keep working.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TurnRange", meta=(Units="Degrees"))
+	float TurnAngle = 0.f;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TurnRange")
     UAnimMontage* AnimMontage = nullptr;
     // useful in big enemies cases, Dragon shouldn't cancel 180deg rotate animation
     // even if Player somehow teleported
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TurnRange")
     bool bOverrideStopMontageOnGoalReached = false;
+	
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TurnRange", meta=(EditCondition="bOverrideStopMontageOnGoalReached", EditConditionHides))
     bool bStopMontageOnGoalReached = false;
 };
@@ -68,6 +74,15 @@ public:
     // BlendOut settings for this option is critical
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TurnSettings")
     bool bStopMontageOnGoalReached = true;
+
+	// if enabled - pick ONE best-matching montage for the whole turn and play only it:
+	// the largest montage whose nominal TurnAngle <= |DeltaAngle| is chosen, and the remaining angle
+	// is completed via motion warping inside that montage (e.g. 110deg -> play 90deg montage, warp the last 20deg).
+	// No montage chaining and no small residual montages.
+	// if disabled - may chain several montages (e.g. 90 then 15) until the goal is reached.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TurnSettings")
+	bool bUseBestSingleMontage = false;
+	
     // TODO bChooseClosestInRaceCondition? если подходят 2 ренджа, в чью пользу принимать решение, зач если есть order TurnRange'ей
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="TurnSettings", meta=(ForceInlineRow))
@@ -108,6 +123,44 @@ namespace TurnToStatics
 			if (bCurrentTurnRangeSet)
 			{
 				break;
+			}
+		}
+		return Result;
+	}
+
+	// best-single-montage selection: among ranges on the same side as DeltaAngle, pick the one whose
+	// nominal TurnAngle is the largest value still <= |DeltaAngle|. Remainder is left to motion warping.
+	// If a range has TurnAngle <= 0 it is auto-derived from the min-magnitude bound of its window.
+	static FTurnRange GetBestSingleTurnRange(float DeltaAngle, bool& bCurrentTurnRangeSet, const FTurnSettings& TurnSettings_In)
+	{
+		FTurnRange Result;
+		bCurrentTurnRangeSet = false;
+		const float AbsDelta = FMath::Abs(DeltaAngle);
+		const bool bRight = DeltaAngle >= 0.f;
+		float BestNominal = -1.f;
+		for (const TTuple<FString, FTurnRanges>& TurnToRange : TurnSettings_In.TurnRangesGroups)
+		{
+			for (const FTurnRange& Range : TurnToRange.Value.TurnRanges)
+			{
+				// side of this range, inferred from its selection window
+				const float Mid = 0.5f * (Range.Range.GetLowerBoundValue() + Range.Range.GetUpperBoundValue());
+				const bool bRangeRight = Mid >= 0.f;
+				if (bRangeRight != bRight)
+				{
+					continue;
+				}
+				float Nominal = Range.TurnAngle;
+				if (Nominal <= 0.f)
+				{
+					// auto-derive nominal from the window's min-magnitude bound (variant-1 fallback)
+					Nominal = FMath::Min(FMath::Abs(Range.Range.GetLowerBoundValue()), FMath::Abs(Range.Range.GetUpperBoundValue()));
+				}
+				if (Nominal <= AbsDelta && Nominal > BestNominal)
+				{
+					BestNominal = Nominal;
+					Result = Range;
+					bCurrentTurnRangeSet = true;
+				}
 			}
 		}
 		return Result;
